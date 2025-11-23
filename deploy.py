@@ -17,12 +17,25 @@ to_drop = joblib.load('dropped_correlated_columns.pkl')
 def preprocess_new_data(new_df):
     # Handle missing (hyphens/spaces to NaN)
     new_df.replace(["-", " "], np.nan, inplace=True)
-    
+
+    #################################################################################################################################################################################
+    ## Remove this part and uncomment the next part:
     # Drop highly correlated features using saved list
-    new_df.drop(columns=to_drop, inplace=True, errors='ignore')
+    new_df.drop(columns=to_drop, inplace=True, errors='ignore') #### I see it should be remove because it is already know the correct columns from the feature_columns
     
     # Select only the feature columns used in training
-    new_df = new_df[feature_columns]
+    new_df = new_df[feature_columns] ### this is repeated in the comment part
+    #################################################################################################################################################################################
+    
+    # Select only the features used in training
+    # missing_cols = set(feature_columns) - set(new_df.columns)
+    # if missing_cols:
+    #     raise ValueError(f"Missing required columns in new data: {missing_cols}")
+    # extra_cols = set(new_df.columns) - set(feature_columns)
+    # if extra_cols:
+    #     print(f"Warning: Extra columns in new data will be dropped: {extra_cols}")
+    #     new_df.drop(columns=extra_cols, inplace=True)
+    # new_df = new_df[feature_columns]  # Reorder to match training
     
     # Normalize
     new_scaled = pd.DataFrame(scaler.transform(new_df), columns=new_df.columns)
